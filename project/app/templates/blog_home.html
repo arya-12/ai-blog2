@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Home - Blog</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="max-w-4xl mx-auto p-6">
+    <form method="get" class="flex mb-6 gap-3">
+      <input name="q" placeholder="Search..." class="flex-1 p-2 rounded border">
+      <select name="category" class="p-2 rounded border">
+        <option value="">All Categories</option>
+        {% for cat in categories %}<option value="{{ cat.id }}">{{ cat.name }}</option>{% endfor %}
+      </select>
+      <button class="bg-blue-600 text-white px-4 py-2 rounded">Filter</button>
+    </form>
+
+    {% for post in posts %}
+      <div class="bg-white p-6 rounded-lg shadow mb-6">
+        {% if post.image %}<img src="{{ post.image.url }}" class="mb-4 rounded" />{% endif %}
+        <h2 class="text-2xl font-bold">
+          <a href="{% url 'post_detail' post.slug %}" class="text-blue-700 hover:underline">{{ post.title }}</a>
+        </h2>
+        <p class="text-sm text-gray-500">{{ post.created_at|date:"F j, Y" }}</p>
+        <p class="mt-3">{{ post.content|truncatewords:25 }}</p>
+        <a href="{% url 'post_detail' post.slug %}" class="text-blue-600 hover:underline mt-2 inline-block">Read more →</a>
+      </div>
+    {% endfor %}
+
+    <div class="flex justify-center gap-2 mt-6">
+      {% if posts.has_previous %}<a href="?page={{ posts.previous_page_number }}" class="text-blue-600">« Prev</a>{% endif %}
+      <span class="text-gray-800">Page {{ posts.number }} of {{ posts.paginator.num_pages }}</span>
+      {% if posts.has_next %}<a href="?page={{ posts.next_page_number }}" class="text-blue-600">Next »</a>{% endif %}
+    </div>
+  </div>
+</body>
+</html>
